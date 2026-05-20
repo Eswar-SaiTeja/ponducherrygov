@@ -14,10 +14,8 @@ export const Route = createFileRoute("/login")({ component: LoginPage });
 function LoginPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -28,20 +26,9 @@ function LoginPage() {
     e.preventDefault();
     setBusy(true);
     try {
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin, data: { full_name: fullName } },
-        });
-        if (error) throw error;
-        toast.success("Account created. You can sign in now.");
-        setMode("login");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success("Welcome back");
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      toast.success("Welcome back");
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -61,12 +48,6 @@ function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="space-y-4">
-            {mode === "signup" && (
-              <div className="space-y-2">
-                <Label htmlFor="name">Full name</Label>
-                <Input id="name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-              </div>
-            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
@@ -77,12 +58,12 @@ function LoginPage() {
             </div>
             <Button type="submit" className="w-full" disabled={busy}>
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {mode === "login" ? "Sign in" : "Create account"}
+              Sign in
             </Button>
-            <button type="button" className="text-sm text-muted-foreground w-full text-center hover:text-foreground" onClick={() => setMode(mode === "login" ? "signup" : "login")}>
-              {mode === "login" ? "Need an account? Sign up" : "Have an account? Sign in"}
-            </button>
           </form>
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            New accounts are invite-only. Contact your administrator for access.
+          </p>
         </CardContent>
       </Card>
     </div>
