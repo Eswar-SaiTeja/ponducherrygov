@@ -17,7 +17,7 @@ export type Database = {
       activity_logs: {
         Row: {
           action: string
-          actor_id: string | null
+          actor_id: string
           created_at: string
           entity: string | null
           entity_id: string | null
@@ -26,7 +26,7 @@ export type Database = {
         }
         Insert: {
           action: string
-          actor_id?: string | null
+          actor_id: string
           created_at?: string
           entity?: string | null
           entity_id?: string | null
@@ -35,7 +35,7 @@ export type Database = {
         }
         Update: {
           action?: string
-          actor_id?: string | null
+          actor_id?: string
           created_at?: string
           entity?: string | null
           entity_id?: string | null
