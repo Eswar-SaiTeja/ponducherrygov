@@ -12,9 +12,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedValidationRouteImport } from './routes/_authenticated/validation'
 import { Route as AuthenticatedUploadsRouteImport } from './routes/_authenticated/uploads'
 import { Route as AuthenticatedStudentsRouteImport } from './routes/_authenticated/students'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedKycRouteImport } from './routes/_authenticated/kyc'
+import { Route as AuthenticatedInstitutionsRouteImport } from './routes/_authenticated/institutions'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCardsRouteImport } from './routes/_authenticated/cards'
 import { Route as AuthenticatedStudentsNewRouteImport } from './routes/_authenticated/students.new'
 
 const LoginRoute = LoginRouteImport.update({
@@ -31,6 +38,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedValidationRoute = AuthenticatedValidationRouteImport.update({
+  id: '/validation',
+  path: '/validation',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedUploadsRoute = AuthenticatedUploadsRouteImport.update({
   id: '/uploads',
   path: '/uploads',
@@ -41,9 +53,41 @@ const AuthenticatedStudentsRoute = AuthenticatedStudentsRouteImport.update({
   path: '/students',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedKycRoute = AuthenticatedKycRouteImport.update({
+  id: '/kyc',
+  path: '/kyc',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedInstitutionsRoute =
+  AuthenticatedInstitutionsRouteImport.update({
+    id: '/institutions',
+    path: '/institutions',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCardsRoute = AuthenticatedCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedStudentsNewRoute =
@@ -56,17 +100,31 @@ const AuthenticatedStudentsNewRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/cards': typeof AuthenticatedCardsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/institutions': typeof AuthenticatedInstitutionsRoute
+  '/kyc': typeof AuthenticatedKycRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/uploads': typeof AuthenticatedUploadsRoute
+  '/validation': typeof AuthenticatedValidationRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/cards': typeof AuthenticatedCardsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/institutions': typeof AuthenticatedInstitutionsRoute
+  '/kyc': typeof AuthenticatedKycRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/uploads': typeof AuthenticatedUploadsRoute
+  '/validation': typeof AuthenticatedValidationRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
 }
 export interface FileRoutesById {
@@ -74,9 +132,16 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authenticated/cards': typeof AuthenticatedCardsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/institutions': typeof AuthenticatedInstitutionsRoute
+  '/_authenticated/kyc': typeof AuthenticatedKycRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/students': typeof AuthenticatedStudentsRouteWithChildren
   '/_authenticated/uploads': typeof AuthenticatedUploadsRoute
+  '/_authenticated/validation': typeof AuthenticatedValidationRoute
   '/_authenticated/students/new': typeof AuthenticatedStudentsNewRoute
 }
 export interface FileRouteTypes {
@@ -84,20 +149,47 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/cards'
     | '/dashboard'
+    | '/institutions'
+    | '/kyc'
+    | '/notifications'
+    | '/reports'
+    | '/settings'
     | '/students'
     | '/uploads'
+    | '/validation'
     | '/students/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/dashboard' | '/students' | '/uploads' | '/students/new'
+  to:
+    | '/'
+    | '/login'
+    | '/cards'
+    | '/dashboard'
+    | '/institutions'
+    | '/kyc'
+    | '/notifications'
+    | '/reports'
+    | '/settings'
+    | '/students'
+    | '/uploads'
+    | '/validation'
+    | '/students/new'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/_authenticated/cards'
     | '/_authenticated/dashboard'
+    | '/_authenticated/institutions'
+    | '/_authenticated/kyc'
+    | '/_authenticated/notifications'
+    | '/_authenticated/reports'
+    | '/_authenticated/settings'
     | '/_authenticated/students'
     | '/_authenticated/uploads'
+    | '/_authenticated/validation'
     | '/_authenticated/students/new'
   fileRoutesById: FileRoutesById
 }
@@ -130,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/validation': {
+      id: '/_authenticated/validation'
+      path: '/validation'
+      fullPath: '/validation'
+      preLoaderRoute: typeof AuthenticatedValidationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/uploads': {
       id: '/_authenticated/uploads'
       path: '/uploads'
@@ -144,11 +243,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/kyc': {
+      id: '/_authenticated/kyc'
+      path: '/kyc'
+      fullPath: '/kyc'
+      preLoaderRoute: typeof AuthenticatedKycRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/institutions': {
+      id: '/_authenticated/institutions'
+      path: '/institutions'
+      fullPath: '/institutions'
+      preLoaderRoute: typeof AuthenticatedInstitutionsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/cards': {
+      id: '/_authenticated/cards'
+      path: '/cards'
+      fullPath: '/cards'
+      preLoaderRoute: typeof AuthenticatedCardsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/students/new': {
@@ -175,15 +316,29 @@ const AuthenticatedStudentsRouteWithChildren =
   )
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedCardsRoute: typeof AuthenticatedCardsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedInstitutionsRoute: typeof AuthenticatedInstitutionsRoute
+  AuthenticatedKycRoute: typeof AuthenticatedKycRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRouteWithChildren
   AuthenticatedUploadsRoute: typeof AuthenticatedUploadsRoute
+  AuthenticatedValidationRoute: typeof AuthenticatedValidationRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCardsRoute: AuthenticatedCardsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedInstitutionsRoute: AuthenticatedInstitutionsRoute,
+  AuthenticatedKycRoute: AuthenticatedKycRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStudentsRoute: AuthenticatedStudentsRouteWithChildren,
   AuthenticatedUploadsRoute: AuthenticatedUploadsRoute,
+  AuthenticatedValidationRoute: AuthenticatedValidationRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
