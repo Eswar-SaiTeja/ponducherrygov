@@ -14,16 +14,363 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          entity: string | null
+          entity_id: string | null
+          id: string
+          metadata: Json | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          metadata?: Json | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
+      cards: {
+        Row: {
+          card_number: string | null
+          card_type: string
+          created_at: string
+          generated_at: string | null
+          id: string
+          qr_payload: string | null
+          status: Database["public"]["Enums"]["card_status"]
+          student_id: string
+          validity: string | null
+        }
+        Insert: {
+          card_number?: string | null
+          card_type: string
+          created_at?: string
+          generated_at?: string | null
+          id?: string
+          qr_payload?: string | null
+          status?: Database["public"]["Enums"]["card_status"]
+          student_id: string
+          validity?: string | null
+        }
+        Update: {
+          card_number?: string | null
+          card_type?: string
+          created_at?: string
+          generated_at?: string | null
+          id?: string
+          qr_payload?: string | null
+          status?: Database["public"]["Enums"]["card_status"]
+          student_id?: string
+          validity?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cards_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institutions: {
+        Row: {
+          city: string | null
+          code: string | null
+          created_at: string
+          id: string
+          logo_url: string | null
+          name: string
+          state: string | null
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          code?: string | null
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          state?: string | null
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          code?: string | null
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          state?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          level: string
+          read: boolean
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          level?: string
+          read?: boolean
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          level?: string
+          read?: boolean
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      students: {
+        Row: {
+          aadhaar_number: string | null
+          address: string | null
+          batch: string | null
+          city: string | null
+          created_at: string
+          created_by: string | null
+          date_of_birth: string | null
+          debit_status: Database["public"]["Enums"]["card_status"]
+          department: string | null
+          email: string | null
+          emergency_contact: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          institution_id: string | null
+          kyc_status: Database["public"]["Enums"]["kyc_status"]
+          mobile_number: string | null
+          photo_url: string | null
+          pincode: string | null
+          pvc_status: Database["public"]["Enums"]["card_status"]
+          roll_number: string
+          state: string | null
+          stream: string | null
+          university: string | null
+          updated_at: string
+          validation_errors: Json | null
+        }
+        Insert: {
+          aadhaar_number?: string | null
+          address?: string | null
+          batch?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string | null
+          debit_status?: Database["public"]["Enums"]["card_status"]
+          department?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          institution_id?: string | null
+          kyc_status?: Database["public"]["Enums"]["kyc_status"]
+          mobile_number?: string | null
+          photo_url?: string | null
+          pincode?: string | null
+          pvc_status?: Database["public"]["Enums"]["card_status"]
+          roll_number: string
+          state?: string | null
+          stream?: string | null
+          university?: string | null
+          updated_at?: string
+          validation_errors?: Json | null
+        }
+        Update: {
+          aadhaar_number?: string | null
+          address?: string | null
+          batch?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string | null
+          debit_status?: Database["public"]["Enums"]["card_status"]
+          department?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          institution_id?: string | null
+          kyc_status?: Database["public"]["Enums"]["kyc_status"]
+          mobile_number?: string | null
+          photo_url?: string | null
+          pincode?: string | null
+          pvc_status?: Database["public"]["Enums"]["card_status"]
+          roll_number?: string
+          state?: string | null
+          stream?: string | null
+          university?: string | null
+          updated_at?: string
+          validation_errors?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      uploads: {
+        Row: {
+          created_at: string
+          error_rows: number | null
+          errors: Json | null
+          filename: string
+          id: string
+          institution_id: string | null
+          kind: string
+          status: Database["public"]["Enums"]["upload_status"]
+          total_rows: number | null
+          uploaded_by: string | null
+          valid_rows: number | null
+        }
+        Insert: {
+          created_at?: string
+          error_rows?: number | null
+          errors?: Json | null
+          filename: string
+          id?: string
+          institution_id?: string | null
+          kind?: string
+          status?: Database["public"]["Enums"]["upload_status"]
+          total_rows?: number | null
+          uploaded_by?: string | null
+          valid_rows?: number | null
+        }
+        Update: {
+          created_at?: string
+          error_rows?: number | null
+          errors?: Json | null
+          filename?: string
+          id?: string
+          institution_id?: string | null
+          kind?: string
+          status?: Database["public"]["Enums"]["upload_status"]
+          total_rows?: number | null
+          uploaded_by?: string | null
+          valid_rows?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "uploads_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "super_admin" | "admin" | "staff"
+      card_status:
+        | "not_generated"
+        | "pending"
+        | "generated"
+        | "dispatched"
+        | "delivered"
+        | "failed"
+      kyc_status: "pending" | "in_review" | "approved" | "rejected"
+      upload_status: "processing" | "completed" | "failed" | "partial"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +497,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["super_admin", "admin", "staff"],
+      card_status: [
+        "not_generated",
+        "pending",
+        "generated",
+        "dispatched",
+        "delivered",
+        "failed",
+      ],
+      kyc_status: ["pending", "in_review", "approved", "rejected"],
+      upload_status: ["processing", "completed", "failed", "partial"],
+    },
   },
 } as const
