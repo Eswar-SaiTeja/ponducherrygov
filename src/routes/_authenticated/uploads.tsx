@@ -15,6 +15,7 @@ function Uploads() {
   const [preview, setPreview] = useState<Record<string, unknown>[]>([]);
   const [busy, setBusy] = useState(false);
   const [filename, setFilename] = useState("");
+  const [errors, setErrors] = useState<{ row: number; field: string; message: string }[]>([]);
   const importFn = useServerFn(importStudents);
 
   const onFile = async (file: File) => {
@@ -45,14 +46,16 @@ function Uploads() {
           filename,
         },
       });
-      if (result.errors.length > 0) {
-        toast.warning(`${result.inserted} of ${result.total} rows imported. ${result.errors.length} validation errors found.`);
+      setErrors(result.errors);
+      if (result.inserted === 0) {
+        toast.error(`0 imported. ${result.errors.length} validation error(s) — see details below.`);
+      } else if (result.errors.length > 0) {
+        toast.warning(`${result.inserted} of ${result.total} rows imported. ${result.errors.length} errors below.`);
+        setAllRows([]); setPreview([]); setFilename("");
       } else {
         toast.success(`${result.inserted} students imported successfully.`);
+        setAllRows([]); setPreview([]); setFilename("");
       }
-      setAllRows([]);
-      setPreview([]);
-      setFilename("");
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Import failed");
     } finally {
@@ -84,6 +87,17 @@ function Uploads() {
                 <Button onClick={importAll} disabled={busy}>
                   {busy ? "Importing..." : `Import ${Math.min(allRows.length, 500)} rows`}
                 </Button>
+              </div>
+            </div>
+          )}
+          {errors.length > 0 && (
+            <div className="mt-4 space-y-2">
+              <div className="text-sm font-medium text-destructive">Validation errors ({errors.length})</div>
+              <div className="bg-destructive/10 border border-destructive/30 rounded p-3 text-xs max-h-64 overflow-auto">
+                {errors.slice(0, 100).map((e, i) => (
+                  <div key={i}>Row {e.row} · <span className="font-medium">{e.field || "row"}</span>: {e.message}</div>
+                ))}
+                {errors.length > 100 && <div className="mt-1 text-muted-foreground">…and {errors.length - 100} more</div>}
               </div>
             </div>
           )}
