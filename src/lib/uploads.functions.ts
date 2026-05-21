@@ -4,23 +4,47 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const MAX_ROWS = 500;
 
+const optStr = (max: number, extra?: (s: z.ZodString) => z.ZodString) => {
+  let base = z.string().trim().max(max);
+  if (extra) base = extra(base);
+  return z.preprocess((v) => {
+    if (v === null || v === undefined) return null;
+    const s = String(v).trim();
+    return s === "" ? null : s;
+  }, base.nullable());
+};
+
 const studentRowSchema = z.object({
-  full_name: z.string().trim().min(1).max(200),
-  roll_number: z.string().trim().min(1).max(100),
-  department: z.string().trim().max(200).nullable().optional(),
-  email: z.string().trim().email().max(255).nullable().optional(),
-  mobile_number: z.string().trim().max(20).regex(/^[0-9+\- ]*$/, "Invalid mobile number format").nullable().optional(),
-  aadhaar_number: z.string().trim().length(12).regex(/^[0-9]{12}$/, "Aadhaar must be exactly 12 digits").nullable().optional(),
-  pincode: z.string().trim().length(6).regex(/^[0-9]{6}$/, "Pincode must be exactly 6 digits").nullable().optional(),
-  address: z.string().trim().max(500).nullable().optional(),
-  city: z.string().trim().max(100).nullable().optional(),
-  state: z.string().trim().max(100).nullable().optional(),
-  gender: z.string().trim().max(50).nullable().optional(),
-  batch: z.string().trim().max(50).nullable().optional(),
-  stream: z.string().trim().max(100).nullable().optional(),
-  university: z.string().trim().max(200).nullable().optional(),
-  emergency_contact: z.string().trim().max(20).regex(/^[0-9+\- ]*$/, "Invalid contact format").nullable().optional(),
+  full_name: z.string().trim().min(1, "Full name is required").max(200),
+  roll_number: z.string().trim().min(1, "Roll number is required").max(100),
+  department: optStr(200),
+  email: optStr(255, (s) => s.email("Invalid email")),
+  mobile_number: optStr(20, (s) => s.regex(/^[0-9+\- ]+$/, "Mobile must contain digits only")),
+  aadhaar_number: optStr(12, (s) => s.regex(/^[0-9]{12}$/, "Aadhaar must be 12 digits")),
+  pincode: optStr(6, (s) => s.regex(/^[0-9]{6}$/, "Pincode must be 6 digits")),
+  address: optStr(500),
+  city: optStr(100),
+  state: optStr(100),
+  gender: optStr(50),
+  batch: optStr(50),
+  stream: optStr(100),
+  university: optStr(200),
+  emergency_contact: optStr(20, (s) => s.regex(/^[0-9+\- ]+$/, "Contact must contain digits only")),
 });
+
+const pick = (r: Record<string, unknown>, ...keys: string[]) => {
+  for (const k of keys) {
+    if (r[k] !== undefined && r[k] !== null && String(r[k]).trim() !== "") return r[k];
+    const lk = k.toLowerCase();
+    for (const actual of Object.keys(r)) {
+      if (actual.toLowerCase().replace(/[\s_-]/g, "") === lk.replace(/[\s_-]/g, "")) {
+        const v = r[actual];
+        if (v !== undefined && v !== null && String(v).trim() !== "") return v;
+      }
+    }
+  }
+  return null;
+};
 
 const importSchema = z.object({
   rows: z.array(z.record(z.unknown())).min(1).max(MAX_ROWS, `Maximum ${MAX_ROWS} rows per upload`),
@@ -36,21 +60,21 @@ export const importStudents = createServerFn({ method: "POST" })
     const normalizedRows = data.rows.map((raw) => {
       const r = raw as Record<string, unknown>;
       return {
-        full_name: String(r.full_name ?? r["Full Name"] ?? "").trim(),
-        roll_number: String(r.roll_number ?? r["Roll Number"] ?? "").trim(),
-        department: r.department ? String(r.department).trim() : null,
-        email: r.email ? String(r.email).trim() : null,
-        mobile_number: r.mobile_number ? String(r.mobile_number).trim() : null,
-        aadhaar_number: r.aadhaar_number ? String(r.aadhaar_number).trim() : null,
-        pincode: r.pincode ? String(r.pincode).trim() : null,
-        address: r.address ? String(r.address).trim() : null,
-        city: r.city ? String(r.city).trim() : null,
-        state: r.state ? String(r.state).trim() : null,
-        gender: r.gender ? String(r.gender).trim() : null,
-        batch: r.batch ? String(r.batch).trim() : null,
-        stream: r.stream ? String(r.stream).trim() : null,
-        university: r.university ? String(r.university).trim() : null,
-        emergency_contact: r.emergency_contact ? String(r.emergency_contact).trim() : null,
+        full_name: String(pick(r, "full_name", "name") ?? "").trim(),
+        roll_number: String(pick(r, "roll_number", "rollno", "roll") ?? "").trim(),
+        department: pick(r, "department", "dept"),
+        email: pick(r, "email", "email_id"),
+        mobile_number: pick(r, "mobile_number", "mobile", "phone"),
+        aadhaar_number: pick(r, "aadhaar_number", "aadhaar", "aadhar"),
+        pincode: pick(r, "pincode", "pin", "zip"),
+        address: pick(r, "address"),
+        city: pick(r, "city"),
+        state: pick(r, "state"),
+        gender: pick(r, "gender"),
+        batch: pick(r, "batch", "year"),
+        stream: pick(r, "stream"),
+        university: pick(r, "university"),
+        emergency_contact: pick(r, "emergency_contact", "emergency"),
       };
     });
 
