@@ -206,6 +206,7 @@ export type Database = {
           university: string | null
           updated_at: string
           validation_errors: Json | null
+          verified: boolean | null
         }
         Insert: {
           aadhaar_number?: string | null
@@ -234,6 +235,7 @@ export type Database = {
           university?: string | null
           updated_at?: string
           validation_errors?: Json | null
+          verified?: boolean | null
         }
         Update: {
           aadhaar_number?: string | null
@@ -262,6 +264,7 @@ export type Database = {
           university?: string | null
           updated_at?: string
           validation_errors?: Json | null
+          verified?: boolean | null
         }
         Relationships: [
           {
