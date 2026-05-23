@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Trash2 } from "lucide-react";
+import { deleteStudent } from "@/lib/students.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/students")({ component: StudentsPage });
 
@@ -15,13 +18,29 @@ type Row = { id: string; full_name: string; roll_number: string; department: str
 function StudentsPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [q, setQ] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const doDelete = useServerFn(deleteStudent);
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase.from("students").select("id,full_name,roll_number,department,email,kyc_status,pvc_status").order("created_at", { ascending: false }).limit(100);
-      setRows((data as Row[]) ?? []);
-    })();
-  }, []);
+  const load = async () => {
+    const { data } = await supabase.from("students").select("id,full_name,roll_number,department,email,kyc_status,pvc_status").order("created_at", { ascending: false }).limit(1000);
+    setRows((data as Row[]) ?? []);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Delete student "${name}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    try {
+      await doDelete({ data: { id } });
+      toast.success("Student deleted");
+      setRows((prev) => prev.filter((r) => r.id !== id));
+    } catch (e: any) {
+      toast.error(e?.message || "Delete failed");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const filtered = rows.filter((r) => !q || r.full_name.toLowerCase().includes(q.toLowerCase()) || r.roll_number.toLowerCase().includes(q.toLowerCase()));
 
@@ -42,12 +61,12 @@ function StudentsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead><TableHead>Roll #</TableHead><TableHead>Department</TableHead><TableHead>Email</TableHead><TableHead>KYC</TableHead><TableHead>PVC</TableHead>
+              <TableHead>Name</TableHead><TableHead>Roll #</TableHead><TableHead>Department</TableHead><TableHead>Email</TableHead><TableHead>KYC</TableHead><TableHead>PVC</TableHead><TableHead className="w-10"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
-              <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No students yet. Add one or upload an Excel file.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No students yet. Add one or upload an Excel file.</TableCell></TableRow>
             ) : filtered.map((r) => (
               <TableRow key={r.id}>
                 <TableCell className="font-medium">{r.full_name}</TableCell>
@@ -56,6 +75,11 @@ function StudentsPage() {
                 <TableCell>{r.email ?? "—"}</TableCell>
                 <TableCell><Badge variant={r.kyc_status === "approved" ? "default" : "secondary"}>{r.kyc_status}</Badge></TableCell>
                 <TableCell><Badge variant="outline">{r.pvc_status}</Badge></TableCell>
+                <TableCell>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" disabled={deletingId === r.id} onClick={() => handleDelete(r.id, r.full_name)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
