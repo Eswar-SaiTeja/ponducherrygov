@@ -3,7 +3,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { Bot, Send, X, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { chatWithAssistant } from "@/lib/ai-assistant.functions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -87,7 +86,7 @@ export function AiAssistant() {
             </button>
           </div>
 
-          <ScrollArea className="flex-1" viewportRef={scrollRef as never}>
+          <div ref={scrollRef} className="flex-1 overflow-y-auto">
             <div className="p-3 space-y-3">
               {messages.map((m, i) => (
                 <div
@@ -117,7 +116,7 @@ export function AiAssistant() {
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           <div className="border-t p-2 flex items-end gap-2 bg-background">
             <Textarea
