@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { createStudent } from "@/lib/students.functions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,18 +33,25 @@ function AddStudent() {
   const navigate = useNavigate();
   const [form, setForm] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  const createStudentFn = useServerFn(createStudent);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const payload: Record<string, string | null> = {};
-    for (const f of fields) payload[f.key] = form[f.key] || null;
-    payload.full_name = form.full_name; payload.roll_number = form.roll_number;
-    const { error } = await supabase.from("students").insert(payload as never);
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success("Student added");
-    navigate({ to: "/students" });
+    const payload: Record<string, string> = {};
+    for (const f of fields) {
+      const v = form[f.key];
+      if (v !== undefined && v !== "") payload[f.key] = v;
+    }
+    try {
+      await createStudentFn({ data: payload as never });
+      toast.success("Student added");
+      navigate({ to: "/students" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to add student");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
