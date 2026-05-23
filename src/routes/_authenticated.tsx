@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { AiAssistant } from "@/components/ai-assistant";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({ component: Layout });
@@ -36,6 +37,7 @@ function Layout() {
             <Outlet />
           </main>
         </div>
+        <AiAssistant />
       </div>
     </SidebarProvider>
   );
