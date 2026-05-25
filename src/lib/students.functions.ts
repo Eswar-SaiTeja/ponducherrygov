@@ -13,7 +13,7 @@ const optStr = (max: number, extra?: (s: z.ZodString) => z.ZodString) => {
 };
 
 const createStudentSchema = z.object({
-  full_name: z.string().trim().min(1, "Full name is required").max(200),
+  full_name: optStr(200),
   roll_number: z.string().trim().min(1, "Roll number is required").max(100),
   department: optStr(200),
   date_of_birth: optStr(20, (s) => s.regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD")),
