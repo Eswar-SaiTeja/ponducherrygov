@@ -16,12 +16,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+    let active = true;
+    const failSafe = window.setTimeout(() => {
+      if (active) setLoading(false);
+    }, 3000);
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      if (!active) return;
+      setSession(s);
       setLoading(false);
     });
-    return () => sub.subscription.unsubscribe();
+
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (!active) return;
+        setSession(data.session);
+      })
+      .catch((error) => {
+        console.error("Failed to restore auth session", error);
+        if (active) setSession(null);
+      })
+      .finally(() => {
+        if (!active) return;
+        window.clearTimeout(failSafe);
+        setLoading(false);
+      });
+
+    return () => {
+      active = false;
+      window.clearTimeout(failSafe);
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   return (
