@@ -64,7 +64,7 @@ function AddStudent() {
             {fields.map((f) => (
               <div key={f.key} className="space-y-2">
                 <Label htmlFor={f.key}>{f.label}</Label>
-                <Input id={f.key} type={f.type ?? "text"} required={f.key === "full_name" || f.key === "roll_number"} value={form[f.key] ?? ""} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} />
+                <Input id={f.key} type={f.type ?? "text"} required={f.key === "roll_number"} value={form[f.key] ?? ""} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} />
               </div>
             ))}
             <div className="md:col-span-2 flex justify-end gap-2">
