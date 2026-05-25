@@ -191,7 +191,7 @@ export type Database = {
           department: string | null
           email: string | null
           emergency_contact: string | null
-          full_name: string
+          full_name: string | null
           gender: string | null
           id: string
           institution_id: string | null
@@ -220,7 +220,7 @@ export type Database = {
           department?: string | null
           email?: string | null
           emergency_contact?: string | null
-          full_name: string
+          full_name?: string | null
           gender?: string | null
           id?: string
           institution_id?: string | null
@@ -249,7 +249,7 @@ export type Database = {
           department?: string | null
           email?: string | null
           emergency_contact?: string | null
-          full_name?: string
+          full_name?: string | null
           gender?: string | null
           id?: string
           institution_id?: string | null
