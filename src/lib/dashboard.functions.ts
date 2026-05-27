@@ -44,7 +44,7 @@ export const getDashboardMetrics = createServerFn({ method: "GET" })
     ] = await Promise.all([
       supabase.from("uploads").select("id", { count: "exact", head: true }).gte("created_at", todayIso),
       supabase.from("students").select("id", { count: "exact", head: true }).eq("kyc_status", "pending"),
-      supabase.from("cards").select("id", { count: "exact", head: true }).in("status", ["pending", "queued"]),
+      supabase.from("cards").select("id", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("cards").select("id", { count: "exact", head: true }).eq("status", "generated").gte("generated_at", todayIso),
       supabase.from("cards").select("id", { count: "exact", head: true }).eq("status", "failed"),
       supabase.from("uploads").select("created_at, error_rows").gte("created_at", since14Iso),
@@ -128,7 +128,7 @@ export const getDashboardMetrics = createServerFn({ method: "GET" })
       },
       uploadsByDay: days.map((d) => ({ day: d.slice(5), count: uploadsByDay[d] })),
       verifyByDay: days.map((d) => ({ day: d.slice(5), ...verifyByDay[d] })),
-      cardStatus: ["pending", "queued", "generated", "dispatched", "delivered", "failed"].map((s) => ({
+      cardStatus: ["pending", "generated", "dispatched", "delivered", "failed"].map((s) => ({
         status: s,
         count: statusCounts[s] ?? 0,
       })),
