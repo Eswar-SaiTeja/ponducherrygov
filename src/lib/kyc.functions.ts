@@ -15,8 +15,9 @@ const updateSchema = z.object({
   }
 });
 
+type SbClient = import("@supabase/supabase-js").SupabaseClient;
 async function applyKycUpdate(
-  supabase: ReturnType<typeof requireSupabaseAuth.handler> extends never ? never : import("@supabase/supabase-js").SupabaseClient,
+  supabase: SbClient,
   userId: string,
   ids: string[],
   status: "pending" | "in_review" | "approved" | "rejected",
@@ -57,7 +58,7 @@ export const updateKycStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i) => updateSchema.parse(i))
   .handler(async ({ data, context }) => {
-    await applyKycUpdate(context.supabase as never, context.userId, [data.id], data.status, data.reason ?? null, data.remarks ?? null);
+    await applyKycUpdate(context.supabase as unknown as SbClient, context.userId, [data.id], data.status, data.reason ?? null, data.remarks ?? null);
     return { ok: true };
   });
 
@@ -76,7 +77,7 @@ export const bulkUpdateKyc = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i) => bulkSchema.parse(i))
   .handler(async ({ data, context }) => {
-    await applyKycUpdate(context.supabase as never, context.userId, data.ids, data.status, data.reason ?? null, data.remarks ?? null);
+    await applyKycUpdate(context.supabase as unknown as SbClient, context.userId, data.ids, data.status, data.reason ?? null, data.remarks ?? null);
     return { ok: true, count: data.ids.length };
   });
 
