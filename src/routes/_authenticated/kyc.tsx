@@ -26,7 +26,7 @@ type KycStatus = "pending" | "in_review" | "approved" | "rejected";
 type Action = "approved" | "rejected" | "in_review";
 type Row = {
   id: string;
-  full_name: string;
+  full_name: string | null;
   roll_number: string;
   department: string | null;
   email: string | null;
