@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -118,7 +118,7 @@ function ExceptionsPage() {
     return "";
   };
 
-  return useMemo(() => (
+  return (
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-bold">Exceptions</h1>
@@ -188,5 +188,5 @@ function ExceptionsPage() {
         </Table>
       </Card>
     </div>
-  ), [cat, rows, selected, list.isLoading, counts.data]); // eslint-disable-line react-hooks/exhaustive-deps
+  );
 }
