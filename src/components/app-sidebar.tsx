@@ -8,7 +8,7 @@ const items = [
   { title: "Students", url: "/students", icon: Users },
   { title: "Add Student", url: "/students/new", icon: UserPlus },
   { title: "Upload Center", url: "/uploads", icon: Upload },
-  { title: "Validation Errors", url: "/validation", icon: AlertTriangle },
+  { title: "Exceptions", url: "/exceptions", icon: AlertTriangle },
   { title: "KYC Monitoring", url: "/kyc", icon: ShieldCheck },
   { title: "Card Generation", url: "/cards", icon: CreditCard },
   { title: "Reports", url: "/reports", icon: FileBarChart },
