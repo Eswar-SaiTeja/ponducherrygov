@@ -121,6 +121,66 @@ export type Database = {
         }
         Relationships: []
       }
+      kyc_reason_templates: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          label: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          kind: string
+          label: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          label?: string
+        }
+        Relationships: []
+      }
+      kyc_reviews: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          new_status: string | null
+          previous_status: string | null
+          reason: string | null
+          remarks: string | null
+          reviewer_id: string
+          student_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          new_status?: string | null
+          previous_status?: string | null
+          reason?: string | null
+          remarks?: string | null
+          reviewer_id: string
+          student_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          new_status?: string | null
+          previous_status?: string | null
+          reason?: string | null
+          remarks?: string | null
+          reviewer_id?: string
+          student_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null

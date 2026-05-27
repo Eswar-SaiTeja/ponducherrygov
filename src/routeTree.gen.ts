@@ -20,6 +20,7 @@ import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedKycRouteImport } from './routes/_authenticated/kyc'
 import { Route as AuthenticatedInstitutionsRouteImport } from './routes/_authenticated/institutions'
+import { Route as AuthenticatedExceptionsRouteImport } from './routes/_authenticated/exceptions'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCardsRouteImport } from './routes/_authenticated/cards'
 import { Route as AuthenticatedStudentsNewRouteImport } from './routes/_authenticated/students.new'
@@ -80,6 +81,11 @@ const AuthenticatedInstitutionsRoute =
     path: '/institutions',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedExceptionsRoute = AuthenticatedExceptionsRouteImport.update({
+  id: '/exceptions',
+  path: '/exceptions',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/cards': typeof AuthenticatedCardsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/exceptions': typeof AuthenticatedExceptionsRoute
   '/institutions': typeof AuthenticatedInstitutionsRoute
   '/kyc': typeof AuthenticatedKycRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/cards': typeof AuthenticatedCardsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/exceptions': typeof AuthenticatedExceptionsRoute
   '/institutions': typeof AuthenticatedInstitutionsRoute
   '/kyc': typeof AuthenticatedKycRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_authenticated/cards': typeof AuthenticatedCardsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/exceptions': typeof AuthenticatedExceptionsRoute
   '/_authenticated/institutions': typeof AuthenticatedInstitutionsRoute
   '/_authenticated/kyc': typeof AuthenticatedKycRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/cards'
     | '/dashboard'
+    | '/exceptions'
     | '/institutions'
     | '/kyc'
     | '/notifications'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/cards'
     | '/dashboard'
+    | '/exceptions'
     | '/institutions'
     | '/kyc'
     | '/notifications'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/_authenticated/cards'
     | '/_authenticated/dashboard'
+    | '/_authenticated/exceptions'
     | '/_authenticated/institutions'
     | '/_authenticated/kyc'
     | '/_authenticated/notifications'
@@ -278,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInstitutionsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/exceptions': {
+      id: '/_authenticated/exceptions'
+      path: '/exceptions'
+      fullPath: '/exceptions'
+      preLoaderRoute: typeof AuthenticatedExceptionsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -318,6 +337,7 @@ const AuthenticatedStudentsRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedCardsRoute: typeof AuthenticatedCardsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedExceptionsRoute: typeof AuthenticatedExceptionsRoute
   AuthenticatedInstitutionsRoute: typeof AuthenticatedInstitutionsRoute
   AuthenticatedKycRoute: typeof AuthenticatedKycRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
@@ -331,6 +351,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCardsRoute: AuthenticatedCardsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedExceptionsRoute: AuthenticatedExceptionsRoute,
   AuthenticatedInstitutionsRoute: AuthenticatedInstitutionsRoute,
   AuthenticatedKycRoute: AuthenticatedKycRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
