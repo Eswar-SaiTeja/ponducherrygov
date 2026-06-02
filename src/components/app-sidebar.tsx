@@ -1,7 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, UserPlus, Upload, AlertTriangle, ShieldCheck, CreditCard, FileBarChart, Bell, Settings, Building2, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, UserPlus, Upload, AlertTriangle, ShieldCheck, CreditCard, FileBarChart, Bell, Settings, Building2, LogOut, Activity, Lock } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -14,7 +16,12 @@ const items = [
   { title: "Reports", url: "/reports", icon: FileBarChart },
   { title: "Notifications", url: "/notifications", icon: Bell },
   { title: "Institutions", url: "/institutions", icon: Building2 },
+  { title: "Security", url: "/settings/security", icon: Lock },
   { title: "Settings", url: "/settings", icon: Settings },
+];
+
+const adminItems = [
+  { title: "Audit Log", url: "/audit", icon: Activity },
 ];
 
 export function AppSidebar() {
@@ -22,6 +29,14 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { signOut, user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("user_roles").select("role").eq("user_id", user.id).then(({ data }) => {
+      setIsAdmin((data ?? []).some((r) => ["admin", "super_admin"].includes(r.role as string)));
+    });
+  }, [user]);
 
   return (
     <Sidebar collapsible="icon">
@@ -51,6 +66,25 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Admin</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {adminItems.map((item) => (
+                  <SidebarMenuItem key={item.url}>
+                    <SidebarMenuButton asChild isActive={path === item.url}>
+                      <Link to={item.url} className="flex items-center gap-2">
+                        <item.icon className="h-4 w-4" />
+                        {!collapsed && <span>{item.title}</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter className="border-t">
         <SidebarMenu>
