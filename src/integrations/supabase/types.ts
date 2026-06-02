@@ -181,6 +181,33 @@ export type Database = {
         }
         Relationships: []
       }
+      login_attempts: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          ip: string | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          ip?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          ip?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -257,6 +284,7 @@ export type Database = {
           institution_id: string | null
           kyc_status: Database["public"]["Enums"]["kyc_status"]
           mobile_number: string | null
+          photo_status: Database["public"]["Enums"]["photo_status"]
           photo_url: string | null
           pincode: string | null
           pvc_status: Database["public"]["Enums"]["card_status"]
@@ -286,6 +314,7 @@ export type Database = {
           institution_id?: string | null
           kyc_status?: Database["public"]["Enums"]["kyc_status"]
           mobile_number?: string | null
+          photo_status?: Database["public"]["Enums"]["photo_status"]
           photo_url?: string | null
           pincode?: string | null
           pvc_status?: Database["public"]["Enums"]["card_status"]
@@ -315,6 +344,7 @@ export type Database = {
           institution_id?: string | null
           kyc_status?: Database["public"]["Enums"]["kyc_status"]
           mobile_number?: string | null
+          photo_status?: Database["public"]["Enums"]["photo_status"]
           photo_url?: string | null
           pincode?: string | null
           pvc_status?: Database["public"]["Enums"]["card_status"]
@@ -433,6 +463,7 @@ export type Database = {
         | "delivered"
         | "failed"
       kyc_status: "pending" | "in_review" | "approved" | "rejected"
+      photo_status: "missing" | "linked" | "invalid_dimensions" | "needs_review"
       upload_status: "processing" | "completed" | "failed" | "partial"
     }
     CompositeTypes: {
@@ -571,6 +602,7 @@ export const Constants = {
         "failed",
       ],
       kyc_status: ["pending", "in_review", "approved", "rejected"],
+      photo_status: ["missing", "linked", "invalid_dimensions", "needs_review"],
       upload_status: ["processing", "completed", "failed", "partial"],
     },
   },
