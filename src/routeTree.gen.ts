@@ -25,6 +25,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCardsRouteImport } from './routes/_authenticated/cards'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedStudentsNewRouteImport } from './routes/_authenticated/students.new'
+import { Route as AuthenticatedSettingsSecurityRouteImport } from './routes/_authenticated/settings.security'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -108,6 +109,12 @@ const AuthenticatedStudentsNewRoute =
     path: '/new',
     getParentRoute: () => AuthenticatedStudentsRoute,
   } as any)
+const AuthenticatedSettingsSecurityRoute =
+  AuthenticatedSettingsSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AuthenticatedSettingsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -120,10 +127,11 @@ export interface FileRoutesByFullPath {
   '/kyc': typeof AuthenticatedKycRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/reports': typeof AuthenticatedReportsRoute
-  '/settings': typeof AuthenticatedSettingsRoute
+  '/settings': typeof AuthenticatedSettingsRouteWithChildren
   '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/uploads': typeof AuthenticatedUploadsRoute
   '/validation': typeof AuthenticatedValidationRoute
+  '/settings/security': typeof AuthenticatedSettingsSecurityRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
 }
 export interface FileRoutesByTo {
@@ -137,10 +145,11 @@ export interface FileRoutesByTo {
   '/kyc': typeof AuthenticatedKycRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/reports': typeof AuthenticatedReportsRoute
-  '/settings': typeof AuthenticatedSettingsRoute
+  '/settings': typeof AuthenticatedSettingsRouteWithChildren
   '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/uploads': typeof AuthenticatedUploadsRoute
   '/validation': typeof AuthenticatedValidationRoute
+  '/settings/security': typeof AuthenticatedSettingsSecurityRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
 }
 export interface FileRoutesById {
@@ -156,10 +165,11 @@ export interface FileRoutesById {
   '/_authenticated/kyc': typeof AuthenticatedKycRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRouteWithChildren
   '/_authenticated/students': typeof AuthenticatedStudentsRouteWithChildren
   '/_authenticated/uploads': typeof AuthenticatedUploadsRoute
   '/_authenticated/validation': typeof AuthenticatedValidationRoute
+  '/_authenticated/settings/security': typeof AuthenticatedSettingsSecurityRoute
   '/_authenticated/students/new': typeof AuthenticatedStudentsNewRoute
 }
 export interface FileRouteTypes {
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/students'
     | '/uploads'
     | '/validation'
+    | '/settings/security'
     | '/students/new'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/students'
     | '/uploads'
     | '/validation'
+    | '/settings/security'
     | '/students/new'
   id:
     | '__root__'
@@ -214,6 +226,7 @@ export interface FileRouteTypes {
     | '/_authenticated/students'
     | '/_authenticated/uploads'
     | '/_authenticated/validation'
+    | '/_authenticated/settings/security'
     | '/_authenticated/students/new'
   fileRoutesById: FileRoutesById
 }
@@ -337,8 +350,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentsNewRouteImport
       parentRoute: typeof AuthenticatedStudentsRoute
     }
+    '/_authenticated/settings/security': {
+      id: '/_authenticated/settings/security'
+      path: '/security'
+      fullPath: '/settings/security'
+      preLoaderRoute: typeof AuthenticatedSettingsSecurityRouteImport
+      parentRoute: typeof AuthenticatedSettingsRoute
+    }
   }
 }
+
+interface AuthenticatedSettingsRouteChildren {
+  AuthenticatedSettingsSecurityRoute: typeof AuthenticatedSettingsSecurityRoute
+}
+
+const AuthenticatedSettingsRouteChildren: AuthenticatedSettingsRouteChildren = {
+  AuthenticatedSettingsSecurityRoute: AuthenticatedSettingsSecurityRoute,
+}
+
+const AuthenticatedSettingsRouteWithChildren =
+  AuthenticatedSettingsRoute._addFileChildren(
+    AuthenticatedSettingsRouteChildren,
+  )
 
 interface AuthenticatedStudentsRouteChildren {
   AuthenticatedStudentsNewRoute: typeof AuthenticatedStudentsNewRoute
@@ -362,7 +395,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedKycRoute: typeof AuthenticatedKycRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
-  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRouteWithChildren
   AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRouteWithChildren
   AuthenticatedUploadsRoute: typeof AuthenticatedUploadsRoute
   AuthenticatedValidationRoute: typeof AuthenticatedValidationRoute
@@ -377,7 +410,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedKycRoute: AuthenticatedKycRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
-  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRouteWithChildren,
   AuthenticatedStudentsRoute: AuthenticatedStudentsRouteWithChildren,
   AuthenticatedUploadsRoute: AuthenticatedUploadsRoute,
   AuthenticatedValidationRoute: AuthenticatedValidationRoute,
