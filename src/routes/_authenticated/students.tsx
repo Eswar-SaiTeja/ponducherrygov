@@ -14,7 +14,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/students")({ component: StudentsPage });
 
-type Row = { id: string; full_name: string; roll_number: string; department: string | null; email: string | null; kyc_status: string; pvc_status: string };
+type Row = { id: string; full_name: string | null; roll_number: string; department: string | null; email: string | null; kyc_status: string; pvc_status: string };
 
 function StudentsPage() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -32,7 +32,7 @@ function StudentsPage() {
 
   useEffect(() => { load(); }, []);
 
-  const filtered = rows.filter((r) => !q || r.full_name.toLowerCase().includes(q.toLowerCase()) || r.roll_number.toLowerCase().includes(q.toLowerCase()));
+  const filtered = rows.filter((r) => !q || (r.full_name ?? "").toLowerCase().includes(q.toLowerCase()) || r.roll_number.toLowerCase().includes(q.toLowerCase()));
 
   const allSelected = filtered.length > 0 && filtered.every((r) => selected.has(r.id));
   const someSelected = filtered.some((r) => selected.has(r.id));
@@ -61,7 +61,7 @@ function StudentsPage() {
     });
   };
 
-  const handleDelete = async (id: string, name: string) => {
+  const handleDelete = async (id: string, name: string | null) => {
     if (!confirm(`Delete student "${name}"? This cannot be undone.`)) return;
     setDeletingId(id);
     try {
@@ -142,7 +142,7 @@ function StudentsPage() {
                 <TableCell>
                   <Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleRow(r.id)} />
                 </TableCell>
-                <TableCell className="font-medium">{r.full_name}</TableCell>
+                <TableCell className="font-medium">{r.full_name ?? "—"}</TableCell>
                 <TableCell>{r.roll_number}</TableCell>
                 <TableCell>{r.department ?? "—"}</TableCell>
                 <TableCell>{r.email ?? "—"}</TableCell>

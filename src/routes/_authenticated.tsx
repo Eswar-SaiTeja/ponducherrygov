@@ -5,12 +5,14 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AiAssistant } from "@/components/ai-assistant";
 import { Loader2 } from "lucide-react";
+import { useSessionTimeout } from "@/hooks/use-session-timeout";
 
 export const Route = createFileRoute("/_authenticated")({ component: Layout });
 
 function Layout() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  useSessionTimeout();
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
