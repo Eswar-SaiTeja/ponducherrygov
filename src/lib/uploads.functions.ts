@@ -2,7 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const MAX_ROWS = 500;
+const MAX_ROWS = 2000;
+const BATCH_SIZE = 100;
 
 const optStr = (max: number, extra?: (s: z.ZodString) => z.ZodString) => {
   let base = z.string().trim().max(max);
@@ -104,10 +105,15 @@ export const importStudents = createServerFn({ method: "POST" })
       return { inserted: 0, total: data.rows.length, errors };
     }
 
-    const { error } = await supabase.from("students").insert(validRows as never);
-
-    if (error) {
-      throw new Error(`Insert failed: ${error.message}`);
+    let inserted = 0;
+    for (let i = 0; i < validRows.length; i += BATCH_SIZE) {
+      const batch = validRows.slice(i, i + BATCH_SIZE);
+      const { error } = await supabase.from("students").insert(batch as never);
+      if (error) {
+        errors.push({ row: 0, field: `batch_${i}`, message: error.message });
+        break;
+      }
+      inserted += batch.length;
     }
 
     // Log upload metadata
@@ -115,12 +121,12 @@ export const importStudents = createServerFn({ method: "POST" })
       filename: data.filename,
       kind: "excel",
       total_rows: data.rows.length,
-      valid_rows: validRows.length,
-      error_rows: errors.length > 0 ? Math.max(1, data.rows.length - validRows.length) : 0,
+      valid_rows: inserted,
+      error_rows: data.rows.length - inserted,
       uploaded_by: userId,
       status: errors.length > 0 ? "partial" : "completed",
       errors: errors.length > 0 ? errors : null,
     } as never);
 
-    return { inserted: validRows.length, total: data.rows.length, errors };
+    return { inserted, total: data.rows.length, errors };
   });

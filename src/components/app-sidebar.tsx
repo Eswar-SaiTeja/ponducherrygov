@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, UserPlus, Upload, AlertTriangle, ShieldCheck, CreditCard, FileBarChart, Bell, Settings, Building2, LogOut, Activity, Lock } from "lucide-react";
+import { LayoutDashboard, Users, UserPlus, Upload, AlertTriangle, ShieldCheck, CreditCard, FileBarChart, Bell, Settings, Building2, LogOut, Activity, Lock, Image } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ const items = [
   { title: "Students", url: "/students", icon: Users },
   { title: "Add Student", url: "/students/new", icon: UserPlus },
   { title: "Upload Center", url: "/uploads", icon: Upload },
+  { title: "Photo Upload", url: "/photos", icon: Image },
   { title: "Exceptions", url: "/exceptions", icon: AlertTriangle },
   { title: "KYC Monitoring", url: "/kyc", icon: ShieldCheck },
   { title: "Card Generation", url: "/cards", icon: CreditCard },
