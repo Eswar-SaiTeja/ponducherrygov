@@ -24,6 +24,7 @@ import { Route as AuthenticatedExceptionsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCardsRouteImport } from './routes/_authenticated/cards'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
+import { Route as AuthenticatedUploadsGuideRouteImport } from './routes/_authenticated/uploads.guide'
 import { Route as AuthenticatedStudentsNewRouteImport } from './routes/_authenticated/students.new'
 import { Route as AuthenticatedSettingsSecurityRouteImport } from './routes/_authenticated/settings.security'
 
@@ -103,6 +104,12 @@ const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedUploadsGuideRoute =
+  AuthenticatedUploadsGuideRouteImport.update({
+    id: '/guide',
+    path: '/guide',
+    getParentRoute: () => AuthenticatedUploadsRoute,
+  } as any)
 const AuthenticatedStudentsNewRoute =
   AuthenticatedStudentsNewRouteImport.update({
     id: '/new',
@@ -129,10 +136,11 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRouteWithChildren
   '/students': typeof AuthenticatedStudentsRouteWithChildren
-  '/uploads': typeof AuthenticatedUploadsRoute
+  '/uploads': typeof AuthenticatedUploadsRouteWithChildren
   '/validation': typeof AuthenticatedValidationRoute
   '/settings/security': typeof AuthenticatedSettingsSecurityRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
+  '/uploads/guide': typeof AuthenticatedUploadsGuideRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -147,10 +155,11 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRouteWithChildren
   '/students': typeof AuthenticatedStudentsRouteWithChildren
-  '/uploads': typeof AuthenticatedUploadsRoute
+  '/uploads': typeof AuthenticatedUploadsRouteWithChildren
   '/validation': typeof AuthenticatedValidationRoute
   '/settings/security': typeof AuthenticatedSettingsSecurityRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
+  '/uploads/guide': typeof AuthenticatedUploadsGuideRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -167,10 +176,11 @@ export interface FileRoutesById {
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRouteWithChildren
   '/_authenticated/students': typeof AuthenticatedStudentsRouteWithChildren
-  '/_authenticated/uploads': typeof AuthenticatedUploadsRoute
+  '/_authenticated/uploads': typeof AuthenticatedUploadsRouteWithChildren
   '/_authenticated/validation': typeof AuthenticatedValidationRoute
   '/_authenticated/settings/security': typeof AuthenticatedSettingsSecurityRoute
   '/_authenticated/students/new': typeof AuthenticatedStudentsNewRoute
+  '/_authenticated/uploads/guide': typeof AuthenticatedUploadsGuideRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/validation'
     | '/settings/security'
     | '/students/new'
+    | '/uploads/guide'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/validation'
     | '/settings/security'
     | '/students/new'
+    | '/uploads/guide'
   id:
     | '__root__'
     | '/'
@@ -228,6 +240,7 @@ export interface FileRouteTypes {
     | '/_authenticated/validation'
     | '/_authenticated/settings/security'
     | '/_authenticated/students/new'
+    | '/_authenticated/uploads/guide'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -343,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAuditRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/uploads/guide': {
+      id: '/_authenticated/uploads/guide'
+      path: '/guide'
+      fullPath: '/uploads/guide'
+      preLoaderRoute: typeof AuthenticatedUploadsGuideRouteImport
+      parentRoute: typeof AuthenticatedUploadsRoute
+    }
     '/_authenticated/students/new': {
       id: '/_authenticated/students/new'
       path: '/new'
@@ -386,6 +406,17 @@ const AuthenticatedStudentsRouteWithChildren =
     AuthenticatedStudentsRouteChildren,
   )
 
+interface AuthenticatedUploadsRouteChildren {
+  AuthenticatedUploadsGuideRoute: typeof AuthenticatedUploadsGuideRoute
+}
+
+const AuthenticatedUploadsRouteChildren: AuthenticatedUploadsRouteChildren = {
+  AuthenticatedUploadsGuideRoute: AuthenticatedUploadsGuideRoute,
+}
+
+const AuthenticatedUploadsRouteWithChildren =
+  AuthenticatedUploadsRoute._addFileChildren(AuthenticatedUploadsRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
   AuthenticatedCardsRoute: typeof AuthenticatedCardsRoute
@@ -397,7 +428,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRouteWithChildren
   AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRouteWithChildren
-  AuthenticatedUploadsRoute: typeof AuthenticatedUploadsRoute
+  AuthenticatedUploadsRoute: typeof AuthenticatedUploadsRouteWithChildren
   AuthenticatedValidationRoute: typeof AuthenticatedValidationRoute
 }
 
@@ -412,7 +443,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRouteWithChildren,
   AuthenticatedStudentsRoute: AuthenticatedStudentsRouteWithChildren,
-  AuthenticatedUploadsRoute: AuthenticatedUploadsRoute,
+  AuthenticatedUploadsRoute: AuthenticatedUploadsRouteWithChildren,
   AuthenticatedValidationRoute: AuthenticatedValidationRoute,
 }
 
@@ -428,3 +459,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
